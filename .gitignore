@@ -1,0 +1,6 @@
+.env
+node_modules/
+tools/*.csv
+tools/*.json
+!tools/kakao_cache.json
+.DS_Store
