@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>지역별 요약 리포트</title>
+<meta name="description" content="전국 시티투어 버스·코스 지역별 현황 요약 리포트">
+<meta name="theme-color" content="#2F6690">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icons/app-icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-icon-apple-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="시티투어지도">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <svg class="sign-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="11" rx="2"/>
+      <path d="M3 12h18M6 5V3M18 5V3"/>
+      <circle cx="7.5" cy="19" r="1.6" fill="currentColor" stroke="none"/>
+      <circle cx="16.5" cy="19" r="1.6" fill="currentColor" stroke="none"/>
+    </svg>
+    <div class="sign-text">
+      <h1 class="app-title">지역별 요약 리포트</h1>
+    </div>
+    <a class="report-btn" href="index.html">지도로</a>
+  </div>
+  <p class="app-notice">전국 시티투어 <span id="totalCount"></span>곳 · 코스 <span id="totalCourses"></span>개 · 자료 조회일 <span id="surveyDate"></span> · 참고용입니다.</p>
+</header>
+
+<main class="container report-page">
+
+  <!-- 핵심 지표 -->
+  <section class="panel">
+    <h2 class="report-section-title">한눈에 보기</h2>
+    <div class="stat-tiles" id="statTiles"></div>
+  </section>
+
+  <!-- 운행방식 분포 -->
+  <section class="panel">
+    <h2 class="report-section-title">운행방식 분포</h2>
+    <div class="status-chips" id="methodChips"></div>
+  </section>
+
+  <!-- 지역별 탑승장 수 -->
+  <section class="panel">
+    <h2 class="report-section-title">지역별 탑승장 수</h2>
+    <div class="district-bars" id="sidoBars"></div>
+    <p class="dash-hint">막대를 누르면 지도에서 해당 지역만 볼 수 있어요</p>
+  </section>
+
+  <!-- 지역별 상세 표 -->
+  <section class="panel">
+    <h2 class="report-section-title">지역별 상세</h2>
+    <div class="table-wrap">
+      <table class="report-table" id="reportTable">
+        <thead>
+          <tr>
+            <th>지역</th><th>탑승장</th><th>코스</th><th>무료 코스 있음</th><th>근사 좌표</th><th>고정형</th><th>순환형</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    <p>자료: 공공데이터포털 「전국시티투어정보표준데이터」 · 운행정보·요금은 바뀔 수 있으니 방문 전 관리기관에 꼭 확인하세요.</p>
+  </footer>
+</main>
+
+<div class="site-notice" role="note">
+  © 2026 전국 시티투어 지도 · 본 사이트는 정보 공유 목적으로 제공됩니다. 시설명·상표 등의 권리는 해당 권리자에게 있습니다.
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/report.js"></script>
+</body>
+</html>
