@@ -8,7 +8,7 @@
  *
  * 콘텐츠를 크게 바꾸면 CACHE 버전 숫자를 올려서 옛 캐시를 비운다.
  */
-const CACHE = 'citytour-map-cache-v1';
+const CACHE = 'citytour-map-cache-v2';
 
 // 첫 진입에 필요한 핵심 자원(앱 셸) — 오프라인 첫 실행 보장
 const CORE_ASSETS = [
@@ -20,7 +20,11 @@ const CORE_ASSETS = [
   'assets/js/app.js',
   'assets/js/geo.js',
   'assets/js/report.js',
-  'assets/js/share-link.js'
+  'assets/js/share-link.js',
+  'assets/icons/app-icon-192.png',
+  'assets/icons/app-icon-512.png',
+  'assets/icons/app-icon-apple-180.png',
+  'assets/icons/app-icon-maskable-512.png'
 ];
 
 self.addEventListener('install', (event) => {
