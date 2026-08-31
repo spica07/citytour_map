@@ -116,21 +116,34 @@
     if (marker) map.once('moveend', function () { marker.openPopup(); });
   }
 
-  /* ---------- 카드 ---------- */
-  function cardHtml(m) {
-    var hasFree = m.courses.some(function (c) { return c.feeFree; });
+  /* ---------- 카드 ----------
+     카드 하나 = 코스 하나. 한 탑승장소에 코스가 여럿이면 카드도 그만큼 나온다.
+     지도 마커는 여전히 탑승장소(m) 단위이며, 카드 클릭 시 그 탑승장소의
+     상세창(코스 전체 목록)이 열린다 — 탑승장소 자체는 카드가 아니라 상세에서 보여준다. */
+  function courseMatchesFilters(m, c) {
+    if (state.method && c.method !== state.method) return false;
+    if (state.freeOnly && !c.feeFree) return false;
+    if (state.q) {
+      var q = state.q.toLowerCase();
+      var hay = (m.place + ' ' + m.sigungu + ' ' + m.sido + ' ' + c.name).toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  }
+
+  function courseCardHtml(m, c) {
     var tags = [
       nearby.tag(m),
       '<span class="tag district">' + esc(m.sido) + ' ' + esc(m.sigungu) + '</span>',
-      '<span class="tag">코스 ' + m.courses.length + '개</span>'
+      '<span class="tag">' + esc(c.method) + '</span>'
     ];
-    if (hasFree) tags.push('<span class="tag free">무료 코스 있음</span>');
+    if (c.feeFree) tags.push('<span class="tag free">무료</span>');
     if (m.geoApprox) tags.push('<span class="tag approx">위치 근사치</span>');
     return (
       '<article class="facility-card" data-id="' + m.id + '">' +
         '<div class="card-body">' +
           '<div class="card-title-row">' +
-            '<h3 class="card-name">' + esc(m.place) + '</h3>' +
+            '<h3 class="card-name">' + esc(c.name) + '</h3>' +
           '</div>' +
           '<div class="card-tags">' + tags.join('') + '</div>' +
           '<button class="card-locate" data-locate="' + m.id + '">위치보기</button>' +
@@ -141,8 +154,15 @@
 
   function renderCards(list) {
     var grid = document.getElementById('cardGrid');
-    grid.innerHTML = list.map(cardHtml).join('');
-    document.getElementById('emptyState').hidden = list.length > 0;
+    var rows = [];
+    list.forEach(function (m) {
+      m.courses.forEach(function (c) {
+        if (courseMatchesFilters(m, c)) rows.push(courseCardHtml(m, c));
+      });
+    });
+    grid.innerHTML = rows.join('');
+    document.getElementById('emptyState').hidden = rows.length > 0;
+    return rows.length;
   }
 
   /* ---------- 상세 모달 ---------- */
@@ -211,10 +231,10 @@
   function render() {
     var list = nearby.sort(CITYTOUR.filter(matches));
     renderMarkers(list);
-    renderCards(list);
+    var courseCount = renderCards(list);
     document.getElementById('resultCount').textContent = nearby.active()
-      ? '가까운 ' + list.length + '곳'
-      : '총 ' + list.length + '곳' + (list.length < CITYTOUR.length ? ' (전체 ' + CITYTOUR.length + '곳 중)' : '');
+      ? '가까운 코스 ' + courseCount + '개'
+      : '총 ' + courseCount + '개 코스' + (courseCount < CITYTOUR_META.totalCourses ? ' (전체 ' + CITYTOUR_META.totalCourses + '개 중)' : '');
   }
 
   /* ---------- 내 주변 ----------
