@@ -163,7 +163,7 @@
           detailRow('운행방식', c.method) +
           detailRow('운영시간', c.hours) +
           detailRow('운행정보', c.operInfo) +
-          detailRow('운행시각', (c.opStart || c.opEnd) ? (esc(c.opStart) + ' ~ ' + esc(c.opEnd)) : '') +
+          detailRow('운행시각', (c.opStart || c.opEnd) ? (c.opStart + ' ~ ' + c.opEnd) : '') +
           detailRow('배차시간', c.interval) +
           detailRow('이용요금', feeText) +
           detailRow('요금 참고', c.feeEtc) +
@@ -235,6 +235,7 @@
     label: document.getElementById('nearbyLabel'),
     notice: document.getElementById('nearbyNotice'),
     unitLabel: '탑승장',
+    limit: 20,
     latLngOf: function (m) { return [m.lat, m.lng]; },
     onClear: clearRegion,
     onChange: render

@@ -67,7 +67,34 @@ def main():
             "refDate": r["데이터기준일자"],
         })
 
-    items = sorted(markers.values(), key=lambda m: (m["sido"], m["sigungu"], m["place"]))
+    ordered = sorted(markers.values(), key=lambda m: (m["sido"], m["sigungu"], m["place"]))
+
+    # 마커 병합: (시군구명, 탑승장소명) 조합으로 나뉜 마커들이 좌표 손상 탓에
+    # 같은 실제 장소인데도 여러 개로 쪼개져 있는 경우가 있다(예: "연수구+중구",
+    # "연수구+강화군", "연수구+중우", "연수구+중구+동구" 모두 인천종합관광안내소로
+    # 지오코딩됨). 캔버스 렌더러는 좌표가 완전히 겹치는 마커 중 맨 위 것만 클릭
+    # 가능하므로, 좌표와 장소명이 모두 같은 마커는 하나로 합쳐 지도 상호작용이
+    # 끊기지 않게 한다. 좌표만 같고 장소명이 다른 경우(우연히 같은 랜드마크로
+    # 지오코딩된 서로 다른 장소)는 의도적으로 합치지 않는다.
+    merge_groups = {}
+    for m in ordered:
+        merge_key = (round(m["lat"], 6), round(m["lng"], 6), m["place"])
+        merge_groups.setdefault(merge_key, []).append(m)
+
+    items = []
+    for merge_key, group in merge_groups.items():
+        if len(group) == 1:
+            items.append(group[0])
+            continue
+        base = group[0]
+        merged_courses = []
+        for g in group:
+            merged_courses.extend(g["courses"])
+        base["courses"] = merged_courses
+        base["geoApprox"] = any(g["geoApprox"] for g in group)
+        items.append(base)
+
+    items.sort(key=lambda m: (m["sido"], m["sigungu"], m["place"]))
     sidos = sorted({m["sido"] for m in items})
     total_courses = sum(len(m["courses"]) for m in items)
     approx_count = sum(1 for m in items if m["geoApprox"])

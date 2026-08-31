@@ -92,11 +92,16 @@ def clean_fragments(place):
 
 
 def geocode_one(sido, sigungu, place):
+    # 시군구명 자체가 "없음"이거나 "중구+옹진군"처럼 여러 시군구가 뒤섞인 경우,
+    # 1단계 검색에 이 손상된 시군구명이 그대로 섞여 들어가 엉뚱한 결과가 1위로
+    # 올라올 수 있다(예: id 27 "중구+옹진군"+"인천역" -> 실제 인천역과 16km 이상
+    # 떨어진 곳). 이런 경우 1단계가 성공해도 근사치로 표시한다.
+    sigungu_corrupted = sigungu == "없음" or "+" in sigungu
     fragments = clean_fragments(place)
     for frag in fragments:
         hit = kakao_keyword(f"{sigungu} {frag}")
         if hit:
-            return hit["lat"], hit["lng"], False
+            return hit["lat"], hit["lng"], sigungu_corrupted
     for frag in fragments:
         hit = kakao_keyword(f"{sido} {frag}")
         if hit:

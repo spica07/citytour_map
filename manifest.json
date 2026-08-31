@@ -1,12 +1,34 @@
 {
   "name": "전국 시티투어 지도",
   "short_name": "시티투어지도",
+  "description": "지자체 시티투어 버스·코스를 지도에서 찾아보고, 요금·운행시간을 한눈에 확인하세요",
+  "lang": "ko",
+  "dir": "ltr",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#F7F7F5",
   "theme_color": "#2F6690",
+  "categories": ["travel", "education", "lifestyle"],
   "icons": [
-    { "src": "assets/icons/app-icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/icons/app-icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "assets/icons/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
