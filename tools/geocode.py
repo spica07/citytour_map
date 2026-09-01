@@ -26,6 +26,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "tools" / "citytour_raw.csv"
+MANUAL = ROOT / "tools" / "manual_rows.csv"
 CACHE_FILE = ROOT / "tools" / "kakao_cache.json"
 OUT = ROOT / "tools" / "geocoded.json"
 KAKAO_KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword.json"
@@ -115,6 +116,9 @@ def geocode_one(sido, sigungu, place):
 def main():
     with SRC.open(encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
+    if MANUAL.exists():
+        with MANUAL.open(encoding="utf-8-sig") as f:
+            rows += list(csv.DictReader(f))
 
     seen = {}
     for r in rows:

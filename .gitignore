@@ -2,6 +2,7 @@
 .superpowers/
 node_modules/
 tools/*.csv
+!tools/manual_rows.csv
 tools/*.json
 !tools/kakao_cache.json
 .DS_Store

@@ -13,6 +13,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "tools" / "citytour_raw.csv"
+MANUAL = ROOT / "tools" / "manual_rows.csv"
 GEOCODED = ROOT / "tools" / "geocoded.json"
 OUT = ROOT / "assets" / "js" / "data.js"
 
@@ -25,6 +26,9 @@ def is_free(fee_text):
 def main():
     with SRC.open(encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
+    if MANUAL.exists():
+        with MANUAL.open(encoding="utf-8-sig") as f:
+            rows += list(csv.DictReader(f))
     geocoded = json.loads(GEOCODED.read_text(encoding="utf-8"))
     coord_by_key = {(g["sigungu"], g["place"]): g for g in geocoded}
 
@@ -76,6 +80,12 @@ def main():
     # 가능하므로, 좌표와 장소명이 모두 같은 마커는 하나로 합쳐 지도 상호작용이
     # 끊기지 않게 한다. 좌표만 같고 장소명이 다른 경우(우연히 같은 랜드마크로
     # 지오코딩된 서로 다른 장소)는 의도적으로 합치지 않는다.
+    #
+    # 다른 지자체가 관리하는 코스가 타지역 명소(예: 광화문역)를 탑승장소로 쓰는
+    # 경우도 좌표·장소명이 같아 같은 그룹으로 묶인다(예: 경기도 안산시 코스가
+    # "광화문역"에서 출발). 이때 병합된 마커의 시도/시군구는 그 물리적 위치를
+    # 정확히 가리키는 쪽(geoApprox=False)을 우선 채택한다 — 근사 좌표(2·3단계
+    # 지오코딩 사다리)로 잡힌 쪽의 시도명은 실제 장소의 소재지가 아닐 수 있다.
     merge_groups = {}
     for m in ordered:
         merge_key = (round(m["lat"], 6), round(m["lng"], 6), m["place"])
@@ -86,6 +96,7 @@ def main():
         if len(group) == 1:
             items.append(group[0])
             continue
+        group = sorted(group, key=lambda g: g["geoApprox"])
         base = group[0]
         merged_courses = []
         for g in group:
